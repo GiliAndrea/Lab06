@@ -1,5 +1,7 @@
 import flet as ft
 
+from model.retailer import Retailer
+
 
 class Controller:
     def __init__(self, view, model):
@@ -21,7 +23,15 @@ class Controller:
         self._view._txtResult.controls.clear()
 
         for sale in self._model.getTopSales(year = self._year, brand = self._brand, retailer = self._retailer):
-            self._view._txtResult.controls.append(ft.Text(value = sale))
+            self._view._txtResult.controls.append(ft.Text(value = f"data: {sale['Date']}, brand: {sale['Product_brand']}"
+                                                          f"retailer: {sale['Retailer_code']} "
+                                                          f"produto: {sale['Product_number']}",))
+
+        if not self._model.getTopSales(year = self._year, brand = self._brand,
+                                       retailer = self._retailer):
+            self._view._txtResult.controls.append(ft.Text(value = "there is no top sales"))
+
+        self._view.update_page()
 
     # function fills fild of the button
     def fillDDBYear(self):
@@ -37,9 +47,9 @@ class Controller:
 
     # function fills fild of the button
     def fillDDBBrand(self):
-        self._view._dDBBrand.options.append(ft.dropdown.Option(text="Nessun filtro",
-                                                              data=None,
-                                                              on_click=self.getTheDataBrand))
+        self._view._dDBBrand.options.append(ft.dropdown.Option(text = "Nessun filtro",
+                                                              data = None,
+                                                              on_click = self.getTheDataBrand))
 
         for brand in self._model.getAllBrands():
             self._view._dDBBrand.options.append(
@@ -49,9 +59,10 @@ class Controller:
 
     # function fills fild of the button
     def fillDDBRetailer(self):
-        self._view._dDBRetailer.options.append(ft.dropdown.Option(text="Nessun filtro",
-                                                              data=None,
-                                                              on_click=self.getTheDataRetailer))
+        self._view._dDBRetailer.options.append(ft.dropdown.Option(text = "Nessun filtro",
+                                                              data = Retailer(name = "Nessuno", type = "",
+                                                                              country = "", code = 0) ,
+                                                              on_click = self.getTheDataRetailer))
 
         for retailer in self._model.getAllRetailers():
             self._view._dDBRetailer.options.append(

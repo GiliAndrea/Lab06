@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 @dataclass
-class Retailer():
+class Retailer:
     code: int
     type: str
     country: str

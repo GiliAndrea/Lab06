@@ -1,4 +1,5 @@
 from database import DAO
+from model.retailer import Retailer
 
 
 class Model:
@@ -17,10 +18,10 @@ class Model:
     def getAllRetailers(self):
         return DAO.DAOClass.getAllRetailers()
 
-    def getTopSales(self, year: int | None, brand: str | None,
-                    retailer: None):
-        pass
+    def getTopSales(self, year: int, brand: str,
+                    retailer: Retailer):
+        return DAO.DAOClass.getDataFilter(year = year, brand = brand, retailer = retailer)
 
-    def getInfoSales(self, year: int | None, brand: str | None,
-                     retailer: None):
+    def getInfoSales(self, year: int, brand: str,
+                     retailer: str):
         pass
