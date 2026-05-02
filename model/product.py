@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+# this class is actually unuseful, so that it is
 @dataclass
 class Product():
     code = int
@@ -8,7 +9,7 @@ class Product():
     brand = str
     type = str
     color = str
-    price = int
+    price  = int
     cost = int
 
 def __str__(self):

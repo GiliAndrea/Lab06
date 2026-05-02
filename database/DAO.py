@@ -1,14 +1,15 @@
 from database import DB_connect
 from model.retailer import Retailer
+from model.sale import Sale
 
 
 class DAOClass():
     def __init__(self):
         pass
 
-    # function that request the data from the database
+    # function that request the data from the database and return all the object retailer from the dataBase
     @staticmethod
-    def getAllRetailers():
+    def getAllRetailers() -> list[Retailer]:
         cnx = DB_connect.DBConnect.get_connection()
         cursor = cnx.cursor(dictionary = True)
 
@@ -21,9 +22,11 @@ class DAOClass():
             newRetailer = Retailer(code = row["Retailer_code"], name = row["Retailer_name"],
                                    country = row["Country"], type = row["Type"])
             result.append(newRetailer)
+        cnx.close()
+        cursor.close()
         return result
 
-    # function that request the data from the database
+    # function that request the data from the database and return a list of string
     @staticmethod
     def getAllYeras():
         cnx = DB_connect.DBConnect.get_connection()
@@ -37,10 +40,11 @@ class DAOClass():
         result = []
         for row in cursor:
             result.append(row["year(Date)"])
-
+        cnx.close()
+        cursor.close()
         return result
 
-    # function that request the data from the database
+    # function that request the data from the database and return a list of string
     @staticmethod
     def getAllBrands():
         cnx = DB_connect.DBConnect.get_connection()
@@ -55,7 +59,14 @@ class DAOClass():
         result = []
         for row in cursor:
             result.append(row["Product_brand"])
+        cnx.close()
+        cursor.close()
         return result
+
+# So, what is written below this comment is actually a part that is correct
+# but in the same time is not correct as well, essentially this function (getDataFilter)
+# comes out well for some request, so particular selection in the search fild, and comes out
+# wrong for other selectio and request
 
     @staticmethod
     def getDataFilter(year: int, brand: str, retailer: Retailer):
@@ -82,8 +93,7 @@ class DAOClass():
             cursor.execute(query, (parametroDue, ))
         elif year == None and brand == None and retailer.code == 0:
              query = """select *
-                     from go_daily_sales gds , go_products gp
-                     where gds.Product_number = gp.Product_number"""
+                     from go_daily_sales gds"""
              cursor.execute(query)
         elif brand == None and year != None and retailer.code != 0:
             query = """select *
@@ -122,12 +132,12 @@ class DAOClass():
 
         result = []
         for row in cursor:
-            vendita = {}
-            vendita["Product_brand"] = row["Product_brand"]
-            vendita["Retailer_code"] = row["Retailer_code"]
-            vendita["Product_number"] = row["Product_number"]
-            vendita["Date"] = row["Date"]
-            result.append(vendita)
-        print(result)
+            new_sale = Sale(Retailer_code = row["Retailer_code"], Product_number = row["Product_number"],
+                            Order_method_code = row["Order_method_code"], Date = row["Date"],
+                            Quantity = row["Quantity"], Unit_price = row["Unit_price"],
+                            Unit_sale_price = row["Unit_sale_price"], ricavo = 0.0)
+            new_sale.ricavoSale()
+            result.append(new_sale)
+        cnx.close()
+        cursor.close()
         return result
-
